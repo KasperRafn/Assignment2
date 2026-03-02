@@ -1,1 +1,1 @@
-python isa-sim.py 100 test_1/program_1.txt test_1/data_mem_1.txt
+python isa-sim/isa-sim.py 100 isa-sim/test_1/program_1.txt isa-sim/test_1/data_mem_1.txt

@@ -313,6 +313,65 @@ print('\n---Start of simulation---')
 ##      Write your code here      ##
 ####################################
 
+class Instruction_set():
+    def __init__(self, registerFile, dataMemory, instructionMemory):
+        self.registerFile = registerFile
+        self.dataMemory = dataMemory
+        self.instructionMemory = instructionMemory
+
+    # Arithmetic instructions
+
+    def add(self, operand_1, operand_2, operand_3):
+        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) + self.registerFile.read_register(operand_3))
+
+    def sub(self, operand_1, operand_2, operand_3):
+        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) - self.registerFile.read_register(operand_3))
+
+    def bitwise_or(self, operand_1, operand_2, operand_3):
+        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) | self.registerFile.read_register(operand_3))
+
+    def bitwise_and(self, operand_1, operand_2, operand_3):
+        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) & self.registerFile.read_register(operand_3))
+
+    def bitwise_not(self, operand_1, operand_2):
+        self.registerFile.write_register(operand_1, ~self.registerFile.read_register(operand_2))
+
+    # Data transfer instructions
+
+    def load_immediate(self, operand_1, int):
+        self.registerFile.write_register(operand_1, int(int))
+
+    def load_data(self, operand_1, operand_2):
+        self.registerFile.write_register(operand_1, self.dataMemory.read_data(self.registerFile.read_register(operand_2)))
+
+    def store_data(self, operand_1, operand_2):
+        self.dataMemory.write_data(int(operand_2), self.registerFile.read_register(operand_1))
+
+    # Control flow instructions
+
+    def jump(self, operand_1):
+        global program_counter
+        program_counter = int(operand_1)
+
+    def jump_if_equal(self, operand_1, operand_2, operand_3):
+        global program_counter
+        if self.registerFile.read_register(operand_2) == self.registerFile.read_register(operand_3):
+            program_counter = int(operand_1)
+
+    def jump_if_less_than(self, operand_1, operand_2, operand_3):
+        global program_counter
+        if self.registerFile.read_register(operand_2) < self.registerFile.read_register(operand_3):
+            program_counter = int(operand_1)
+
+    def no_operation(self):
+        pass
+
+    def end_execution(self):
+        global current_cycle
+        current_cycle = max_cycles
+
+Instruction_set = Instruction_set(registerFile, dataMemory, instructionMemory)
+
 while current_cycle < max_cycles:
 
     print('\nCycle ' + str(current_cycle) + ':')
