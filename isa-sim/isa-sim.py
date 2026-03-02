@@ -313,4 +313,20 @@ print('\n---Start of simulation---')
 ##      Write your code here      ##
 ####################################
 
+while current_cycle < max_cycles:
+
+    print('\nCycle ' + str(current_cycle) + ':')
+
+    instructionMemory.print_instruction(program_counter)
+
+    opcode = instructionMemory.read_opcode(program_counter)
+    operand_1 = instructionMemory.read_operand_1(program_counter)
+    operand_2 = instructionMemory.read_operand_2(program_counter)
+    operand_3 = instructionMemory.read_operand_3(program_counter)
+
+    print('Executing instruction: ' + opcode + ' ' + operand_1 + ' ' + operand_2 + ' ' + operand_3)
+
+    #program_counter += 1
+    current_cycle += 1
+
 print('\n---End of simulation---\n')
