@@ -338,30 +338,27 @@ class Instruction_set():
 
     # Data transfer instructions
 
-    def load_immediate(self, operand_1, int):
-        self.registerFile.write_register(operand_1, int(int))
+    def load_immediate(self, operand_1, operand_2):
+        self.registerFile.write_register(operand_1, int(operand_2))
 
     def load_data(self, operand_1, operand_2):
         self.registerFile.write_register(operand_1, self.dataMemory.read_data(self.registerFile.read_register(operand_2)))
 
     def store_data(self, operand_1, operand_2):
-        self.dataMemory.write_data(int(operand_2), self.registerFile.read_register(operand_1))
+        self.dataMemory.write_data(self.registerFile.read_register(operand_2), self.registerFile.read_register(operand_1))
 
     # Control flow instructions
 
     def jump(self, operand_1):
-        global program_counter
-        program_counter = int(operand_1)
+        return self.registerFile.read_register(operand_1)
 
     def jump_if_equal(self, operand_1, operand_2, operand_3):
-        global program_counter
         if self.registerFile.read_register(operand_2) == self.registerFile.read_register(operand_3):
-            program_counter = int(operand_1)
+            return self.registerFile.read_register(operand_1)
 
     def jump_if_less_than(self, operand_1, operand_2, operand_3):
-        global program_counter
         if self.registerFile.read_register(operand_2) < self.registerFile.read_register(operand_3):
-            program_counter = int(operand_1)
+            return self.registerFile.read_register(operand_1)
 
     def no_operation(self):
         pass
@@ -385,7 +382,46 @@ while current_cycle < max_cycles:
 
     print('Executing instruction: ' + opcode + ' ' + operand_1 + ' ' + operand_2 + ' ' + operand_3)
 
-    #program_counter += 1
+    next_pc = None
+    match opcode:
+        case 'ADD':
+            Instruction_set.add(operand_1, operand_2, operand_3)
+        case 'SUB':
+            Instruction_set.sub(operand_1, operand_2, operand_3)
+        case 'OR':
+            Instruction_set.bitwise_or(operand_1, operand_2, operand_3)
+        case 'AND':
+            Instruction_set.bitwise_and(operand_1, operand_2, operand_3)
+        case 'NOT':
+            Instruction_set.bitwise_not(operand_1, operand_2)
+        case 'LI':
+            Instruction_set.load_immediate(operand_1, operand_2)
+        case 'LD':
+            Instruction_set.load_data(operand_1, operand_2)
+        case 'SD':
+            Instruction_set.store_data(operand_1, operand_2)
+        case 'JR':
+            next_pc = Instruction_set.jump(operand_1)
+        case 'JEQ':
+            next_pc = Instruction_set.jump_if_equal(operand_1, operand_2, operand_3)
+        case 'JLT':
+            next_pc = Instruction_set.jump_if_less_than(operand_1, operand_2, operand_3)
+        case 'NOP':
+            Instruction_set.no_operation()
+        case 'END':
+            Instruction_set.end_execution()
+        case _:
+            print('Unknown instruction. Terminating execution.')
+            sys.exit(-1)
+
+    if next_pc is not None:
+        program_counter = next_pc
+    else:
+        program_counter += 1
+
     current_cycle += 1
 
 print('\n---End of simulation---\n')
+
+registerFile.print_all()
+dataMemory.print_used()
