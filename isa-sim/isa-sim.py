@@ -313,61 +313,59 @@ print('\n---Start of simulation---')
 ##      Write your code here      ##
 ####################################
 
-class Instruction_set():
-    def __init__(self, registerFile, dataMemory, instructionMemory):
-        self.registerFile = registerFile
-        self.dataMemory = dataMemory
-        self.instructionMemory = instructionMemory
+#           Instruction Set          #
 
-    # Arithmetic instructions
+# Arithmetic instructions
 
-    def add(self, operand_1, operand_2, operand_3):
-        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) + self.registerFile.read_register(operand_3))
+def add(operand_1, operand_2, operand_3):
+    registerFile.write_register(operand_1, registerFile.read_register(operand_2) + registerFile.read_register(operand_3))
 
-    def sub(self, operand_1, operand_2, operand_3):
-        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) - self.registerFile.read_register(operand_3))
+def sub(operand_1, operand_2, operand_3):
+    registerFile.write_register(operand_1, registerFile.read_register(operand_2) - registerFile.read_register(operand_3))
 
-    def bitwise_or(self, operand_1, operand_2, operand_3):
-        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) | self.registerFile.read_register(operand_3))
+def bitwise_or(operand_1, operand_2, operand_3):
+    registerFile.write_register(operand_1, registerFile.read_register(operand_2) | registerFile.read_register(operand_3))
 
-    def bitwise_and(self, operand_1, operand_2, operand_3):
-        self.registerFile.write_register(operand_1, self.registerFile.read_register(operand_2) & self.registerFile.read_register(operand_3))
+def bitwise_and(operand_1, operand_2, operand_3):
+    registerFile.write_register(operand_1, registerFile.read_register(operand_2) & registerFile.read_register(operand_3))
 
-    def bitwise_not(self, operand_1, operand_2):
-        self.registerFile.write_register(operand_1, ~self.registerFile.read_register(operand_2))
+def bitwise_not(operand_1, operand_2):
+    registerFile.write_register(operand_1, ~registerFile.read_register(operand_2))
 
-    # Data transfer instructions
+# Data transfer instructions
 
-    def load_immediate(self, operand_1, operand_2):
-        self.registerFile.write_register(operand_1, int(operand_2))
+def load_immediate(operand_1, operand_2):
+    registerFile.write_register(operand_1, int(operand_2))
 
-    def load_data(self, operand_1, operand_2):
-        self.registerFile.write_register(operand_1, self.dataMemory.read_data(self.registerFile.read_register(operand_2)))
+def load_data(operand_1, operand_2):
+    registerFile.write_register(operand_1, dataMemory.read_data(registerFile.read_register(operand_2)))
 
-    def store_data(self, operand_1, operand_2):
-        self.dataMemory.write_data(self.registerFile.read_register(operand_2), self.registerFile.read_register(operand_1))
+def store_data(operand_1, operand_2):
+    dataMemory.write_data(registerFile.read_register(operand_2), registerFile.read_register(operand_1))
 
-    # Control flow instructions
+# Control flow instructions
 
-    def jump(self, operand_1):
-        return self.registerFile.read_register(operand_1)
+def jump(operand_1):
+    return registerFile.read_register(operand_1)
 
-    def jump_if_equal(self, operand_1, operand_2, operand_3):
-        if self.registerFile.read_register(operand_2) == self.registerFile.read_register(operand_3):
-            return self.registerFile.read_register(operand_1)
+def jump_if_equal(operand_1, operand_2, operand_3):
+    if registerFile.read_register(operand_2) == registerFile.read_register(operand_3):
+        return registerFile.read_register(operand_1)
 
-    def jump_if_less_than(self, operand_1, operand_2, operand_3):
-        if self.registerFile.read_register(operand_2) < self.registerFile.read_register(operand_3):
-            return self.registerFile.read_register(operand_1)
+def jump_if_less_than(operand_1, operand_2, operand_3):
+    if registerFile.read_register(operand_2) < registerFile.read_register(operand_3):
+        return registerFile.read_register(operand_1)
 
-    def no_operation(self):
-        pass
+def no_operation():
+    pass
 
-    def end_execution(self):
-        global current_cycle
-        current_cycle = max_cycles
+def end_execution():
+    global current_cycle
+    current_cycle = max_cycles
 
-Instruction_set = Instruction_set(registerFile, dataMemory, instructionMemory)
+#      End of instruction set          #
+
+#      Cycle execution loop            #
 
 while current_cycle < max_cycles:
 
@@ -385,31 +383,31 @@ while current_cycle < max_cycles:
     next_pc = None
     match opcode:
         case 'ADD':
-            Instruction_set.add(operand_1, operand_2, operand_3)
+            add(operand_1, operand_2, operand_3)
         case 'SUB':
-            Instruction_set.sub(operand_1, operand_2, operand_3)
+            sub(operand_1, operand_2, operand_3)
         case 'OR':
-            Instruction_set.bitwise_or(operand_1, operand_2, operand_3)
+            bitwise_or(operand_1, operand_2, operand_3)
         case 'AND':
-            Instruction_set.bitwise_and(operand_1, operand_2, operand_3)
+            bitwise_and(operand_1, operand_2, operand_3)
         case 'NOT':
-            Instruction_set.bitwise_not(operand_1, operand_2)
+            bitwise_not(operand_1, operand_2)
         case 'LI':
-            Instruction_set.load_immediate(operand_1, operand_2)
+            load_immediate(operand_1, operand_2)
         case 'LD':
-            Instruction_set.load_data(operand_1, operand_2)
+            load_data(operand_1, operand_2)
         case 'SD':
-            Instruction_set.store_data(operand_1, operand_2)
+            store_data(operand_1, operand_2)
         case 'JR':
-            next_pc = Instruction_set.jump(operand_1)
+            next_pc = jump(operand_1)
         case 'JEQ':
-            next_pc = Instruction_set.jump_if_equal(operand_1, operand_2, operand_3)
+            next_pc = jump_if_equal(operand_1, operand_2, operand_3)
         case 'JLT':
-            next_pc = Instruction_set.jump_if_less_than(operand_1, operand_2, operand_3)
+            next_pc = jump_if_less_than(operand_1, operand_2, operand_3)
         case 'NOP':
-            Instruction_set.no_operation()
+            no_operation()
         case 'END':
-            Instruction_set.end_execution()
+            end_execution()
         case _:
             print('Unknown instruction. Terminating execution.')
             sys.exit(-1)
