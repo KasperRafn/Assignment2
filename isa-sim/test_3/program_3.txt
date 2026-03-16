@@ -1,86 +1,181 @@
-# Program: Merge Sort Step
-# This program merges two sorted subarrays (0-3 and 4-7) into a single sorted array starting at address 10.
-# It implements the merge phase of merge sort by comparing elements from both subarrays and placing them in order.
-
-# Register Usage:
-# R0: Jump address for end (35)
-# R1: Pointer to current element in subarray 1: 0
-# R2: End index of subarray 1 + 1: 4
-# R3: Pointer to current element in subarray 2: 4
-# R4: End index of subarray 2 + 1: 8
-# R5:
-# R6:
-# R7: Current value from subarray 1
-# R8: Current value from subarray 2
-# R9: Write pointer for merged array (starts at 8)
-# R10: Increment value = 1
-# R11: Jump address for adding from subarray 1 (18)
-# R12: Jump address for adding from subarray 2 (23)
-# R13: Jump address for comparison (15)
-# R14: Jump address for checking array emptiness (28)
-# R15: Temporary for sum of array ends
-# R16: Total elements (8)
+# Programm to merge sort an array of length 8
+# The merge part is dynamically implemented
+# The final sorted array should be in the memory in ascending order from address 24 - 31
+# Theoretically less memory could be used by for example overriding memory used in the first merge steps. I decided not to implement this so it is more easy to see the different merge steps in the memory.
 
 ###############################################################################################
+# Initialize Register
+###############################################################################################
 
-# Initialization Section
-# Set up pointers for subarrays
-0: LI R1, 0;
-1: LI R2, 4;
-2: LI R3, 4;
-3: LI R4, 8;
+0: NOP;
 
-# Initialize counters (currently unused)
-4: LI R5, 0;
-5: LI R6, 0;
+2: LI, R1, 0; # Pointer to current element in subarray 1
+2: LI, R1, 0; # nd index of subarray 1 + 1
+3: LI, R2, 0; # Pointer to current element in subarray 2
+4: LI, R3, 0; # End index of subarray 2 + 1
 
-# Load first elements of both subarrays
-6: LD R7, R1;
-7: LD R8, R3;
+5: LI, R7, 0; # Current value from subarray 1
+6: LI, R8, 0; # Current value from subarray 2
+7: LI, R9, 0; # Write pointer for merged array
+8: LI, R10, 1; # Increment value = 1
+
+# Jump addresses
+9: LI R11, 67; # Jump address for adding from subarray 1 
+10: LI R12, 73; # Jump address for adding from subarray 2 
+11: LI R13, 64; # Jump address for comparison 
+
+12: LI R5, 62;  # Jump address for merge sort entry (subroutine start)
+13: LI R6, 0;   # Return address (will be set by caller)
+
+14: LI R14, 64; # Jump address for going back to compare after loading next element
+
+15: LI R15, 79; # Jump for Arr 1 exhausted
+16: LI R16, 82; # Jump for Arr 2 exhausted
+
+###############################################################################################
+# Pass 1: merge 1 elements (0-1, 2-3, 4-6, 6-7) -> Merged addresses - 8 - 15
+###############################################################################################
 
 # Set up merge parameters
-8: LI R9, 8;
-9: LI R10, 1;
+17: LI R9, 8;
 
-# Jump addresses for merge logic
-10: LI R11, 18;
-11: LI R12, 23;
-12: LI R13, 15;
-13: LI R14, 28;
+#------------------------------
+# Pair (0,1)
+#------------------------------
+# Set up pointers for subarrays
+18: LI R1, 0;
+19: LI R2, 1;
+20: LI R3, 1;
+21: LI R4, 2;
+
+22: LI R6, 24;
+23: JR R5;
+
+#------------------------------
+# Pair (2,3)
+#------------------------------
+24: LI R1, 2;
+25: LI R2, 3;
+26: LI R3, 3;
+27: LI R4, 4;
+
+28: LI R6, 30;
+29: JR R5;
+
+#------------------------------
+# Pair (4,5)
+#------------------------------
+30: LI R1, 4;
+31: LI R2, 5;
+32: LI R3, 5;
+33: LI R4, 6;
+
+34: LI R6, 36;
+35: JR R5;
+
+#------------------------------
+# Pair (6,7)
+#------------------------------
+36: LI R1, 6;
+37: LI R2, 7;
+38: LI R3, 7;
+39: LI R4, 8;
+
+40: LI R6, 42;
+41: JR R5;
+
+###############################################################################################
+# Pass 2: merge 2 elements (8-9 and 10-11, 12-13 and 14-15) -> Merged addresses - 16 - 23
+###############################################################################################
+
+42: LI R9, 16;
+
+#------------------------------
+# Pair (8-9 and 10-11)
+#------------------------------
+43: LI R1, 8;
+44: LI R2, 10;
+45: LI R3, 10;
+46: LI R4, 12;
+
+47: LI R6, 49;
+48: JR R5;
+
+#------------------------------
+# Pair (12-13 and 14-15)
+#------------------------------
+49: LI R1, 12;
+50: LI R2, 14;
+51: LI R3, 14;
+52: LI R4, 16;
+
+53: LI R6, 55;
+54: JR R5;
+
+###############################################################################################
+# Pass 3 merge 4 elements (16-20 and 21-24) -> Merged addresses - 24 - 31
+###############################################################################################
+
+55: LI R9, 24;
+
+#------------------------------
+# Pair (16-19 and 20-23)
+#------------------------------
+56: LI R1, 16;
+57: LI R2, 20;
+58: LI R3, 20;
+59: LI R4, 24;
+
+60: LI R6, 92;
+61: JR R5;
+
+#################################################################################################
+# Merge subroutine (entry at address 62)
+#################################################################################################
+
+# Load first elements of both subarrays
+62: LD R7, R1;
+63: LD R8, R3;
 
 #################################################################################################
 
-# Main Merge Loop
 # Compare current elements and decide which to add
-15: JEQ R11, R7, R8; # If both values are equal just add 1
-16: JLT R11, R7, R8; # If subAr 1 elem is less add it
-17: JLT R12, R8, R7; # If subAr 2 elem is less add it
+64: JEQ R11, R7, R8; # If both values are equal add from subArr 1
+65: JLT R11, R7, R8; # If subArr 1 elem is less add it
+66: JLT R12, R8, R7; # If subArr 2 elem is less add it
 
 # Add element from subarray 1 to merged array
-18: ADD R1, R1, R10; # Increment subarray 1 pointer
-19: SD R7, R9; # Write subAr 1 elem to merged array
-20: ADD R9, R9, R10; # Increment write pointer
-21: LD R7, R1; # Load next element from subarray 1
-22: JR R14; # Jump back to emptiness check
+67: JEQ R15, R1, R2; # Jump if subArr 1 exhausted
+
+68: ADD R1, R1, R10; # Increment subarray 1 pointer
+69: SD R7, R9;       # Write subArr 1 elem to merged array
+70: ADD R9, R9, R10; # Increment write pointer
+
+71: LD R7, R1;       # Load next element from subarray 1
+72: JR R14;          # Jump back to compare
 
 # Add element from subarray 2 to merged array
-23: ADD R3, R3, R10; # Increment subarray 2 pointer
-24: SD R8, R9; # Write subAr 2 elem to merged array
-25: ADD R9, R9, R10; # Increment write pointer
-26: LD R8, R3; # Load next element from subarray 2
-27: JR R14; # Jump back to emptiness check
+73: JEQ R16, R3, R4; # Jump if subArr 2 exhausted
 
-# Check if subarrays are exhausted
-# To check if subarrays are exhausted we check if the both pointers for the subarrays are at their maximum value by adding them together. If both are exhausted the sum should be 12
-28: ADD R15, R1, R3; 
-29: LI R16, 12;
-30: LI R0, 35; # R0 = end address
-31: JEQ R0, R15, R16;
+74: ADD R3, R3, R10; # Increment subarray 2 pointer
+75: SD R8, R9;       # Write subArr 2 elem to merged array
+76: ADD R9, R9, R10; # Increment write pointer
 
-# Check if individual subarrays are empty
-32: JEQ R12, R1, R2; # If R1 == R2 subAr 1 is empty, add from subarray 2
-33: JEQ R11, R3, R4; # If R3 == R4 subAr 2 is empty, add from subarray 1
-34: JR R13; # Jump back to comparison
+77: LD R8, R3;       # Load next element from subarray 2
+78: JR R14;          # Jump back to compare
 
-# End of program
-35: END
+#################################################################################################
+
+# subArr 1 exhausted
+79: JEQ R6, R3, R4;  # If subArr 2 also exhausted return
+81: JR R12;          # else add remaining of subArr 2
+
+# subArr 2 exhausted
+82: JEQ R6, R1, R2;  # If subArr 1 also exhausted return
+84: JR R11;          # else add remaining of subArr 1
+
+#################################################################################################
+# End Programm
+#################################################################################################
+
+92: END;

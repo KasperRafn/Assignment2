@@ -2,4 +2,4 @@ python isa-sim/isa-sim.py 100 isa-sim/test_1/program_1.txt isa-sim/test_1/data_m
 
 python isa-sim/isa-sim.py 1000 isa-sim/test_2/program_2.txt isa-sim/test_2/data_mem_2.txt
 
-python isa-sim/isa-sim.py 200 isa-sim/test_3/program_3.txt isa-sim/test_3/data_mem_3.txt
+python isa-sim/isa-sim.py 1000 isa-sim/test_3/program_3.txt isa-sim/test_3/data_mem_3.txt
