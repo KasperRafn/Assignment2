@@ -18,7 +18,7 @@
 8: JEQ R7, R4, R0;  # Goto done: if the counter is zero
 9: SUB R4, R4, R3;  # Decrement counter
 10: ADD R1, R1, R3;  # Increment read pointer
-11: ADD R2, R2, R3;  # Increment write pointer
+11: ADD R2, R2, R3;  # Increment write pointer  
 12: JR R6;  # Goto copy:
 
 # Start with the bubble sort:

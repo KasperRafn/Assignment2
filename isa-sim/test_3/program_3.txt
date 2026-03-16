@@ -1,0 +1,86 @@
+# Program: Merge Sort Step
+# This program merges two sorted subarrays (0-3 and 4-7) into a single sorted array starting at address 10.
+# It implements the merge phase of merge sort by comparing elements from both subarrays and placing them in order.
+
+# Register Usage:
+# R0: Jump address for end (35)
+# R1: Pointer to current element in subarray 1: 0
+# R2: End index of subarray 1 + 1: 4
+# R3: Pointer to current element in subarray 2: 4
+# R4: End index of subarray 2 + 1: 8
+# R5:
+# R6:
+# R7: Current value from subarray 1
+# R8: Current value from subarray 2
+# R9: Write pointer for merged array (starts at 8)
+# R10: Increment value = 1
+# R11: Jump address for adding from subarray 1 (18)
+# R12: Jump address for adding from subarray 2 (23)
+# R13: Jump address for comparison (15)
+# R14: Jump address for checking array emptiness (28)
+# R15: Temporary for sum of array ends
+# R16: Total elements (8)
+
+###############################################################################################
+
+# Initialization Section
+# Set up pointers for subarrays
+0: LI R1, 0;
+1: LI R2, 4;
+2: LI R3, 4;
+3: LI R4, 8;
+
+# Initialize counters (currently unused)
+4: LI R5, 0;
+5: LI R6, 0;
+
+# Load first elements of both subarrays
+6: LD R7, R1;
+7: LD R8, R3;
+
+# Set up merge parameters
+8: LI R9, 8;
+9: LI R10, 1;
+
+# Jump addresses for merge logic
+10: LI R11, 18;
+11: LI R12, 23;
+12: LI R13, 15;
+13: LI R14, 28;
+
+#################################################################################################
+
+# Main Merge Loop
+# Compare current elements and decide which to add
+15: JEQ R11, R7, R8; # If both values are equal just add 1
+16: JLT R11, R7, R8; # If subAr 1 elem is less add it
+17: JLT R12, R8, R7; # If subAr 2 elem is less add it
+
+# Add element from subarray 1 to merged array
+18: ADD R1, R1, R10; # Increment subarray 1 pointer
+19: SD R7, R9; # Write subAr 1 elem to merged array
+20: ADD R9, R9, R10; # Increment write pointer
+21: LD R7, R1; # Load next element from subarray 1
+22: JR R14; # Jump back to emptiness check
+
+# Add element from subarray 2 to merged array
+23: ADD R3, R3, R10; # Increment subarray 2 pointer
+24: SD R8, R9; # Write subAr 2 elem to merged array
+25: ADD R9, R9, R10; # Increment write pointer
+26: LD R8, R3; # Load next element from subarray 2
+27: JR R14; # Jump back to emptiness check
+
+# Check if subarrays are exhausted
+# To check if subarrays are exhausted we check if the both pointers for the subarrays are at their maximum value by adding them together. If both are exhausted the sum should be 12
+28: ADD R15, R1, R3; 
+29: LI R16, 12;
+30: LI R0, 35; # R0 = end address
+31: JEQ R0, R15, R16;
+
+# Check if individual subarrays are empty
+32: JEQ R12, R1, R2; # If R1 == R2 subAr 1 is empty, add from subarray 2
+33: JEQ R11, R3, R4; # If R3 == R4 subAr 2 is empty, add from subarray 1
+34: JR R13; # Jump back to comparison
+
+# End of program
+35: END

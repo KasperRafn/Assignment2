@@ -24,7 +24,7 @@ the registers are generated and initialized to 0.
 class RegisterFile:
     def __init__(self):
         self.registers = {}
-        for i in range(0, 16):
+        for i in range(0, 17):
             self.registers['R'+str(i)] = 0
 
     '''
@@ -65,7 +65,7 @@ class RegisterFile:
     '''
     def print_all(self):
         print('Register file content:')
-        for i in range(0, 16):
+        for i in range(0, 17):
             self.print_register('R' + str(i))
 
 
@@ -181,7 +181,7 @@ class InstructionMemory:
         file_content = re.sub(r'#.*?\n', '', file_content)
         file_content = re.sub(r'#.*? ', '', file_content)
         file_content = re.sub(r'\s*[\n\t]+\s*', '', file_content)
-        file_content = re.sub('\s\s+', ' ',  file_content)
+        file_content = re.sub(r'\s\s+', ' ',  file_content)
         file_content = file_content.replace(': ', ':')
         file_content = file_content.replace(' :', ':')
         file_content = file_content.replace(', ', ',')
@@ -411,6 +411,9 @@ while current_cycle < max_cycles:
         case _:
             print('Unknown instruction. Terminating execution.')
             sys.exit(-1)
+
+    dataMemory.print_used()
+    registerFile.print_all()
 
     if next_pc is not None:
         program_counter = next_pc
